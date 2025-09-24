@@ -1,50 +1,3 @@
-<?php
-session_start();
-
-$host = '192.168.100.20';
-$dbname = 'I4010_9956';
-$user = 'ui4b45';
-$pass = 'Esas0914';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
-} catch (PDOException $e) {
-    die("資料庫連線失敗：" . $e->getMessage());
-}
-
-$filter_type = $_GET['event_type'] ?? '';
-$filter_name = $_GET['event_name'] ?? '';
-
-$sql = "SELECT * FROM CoupleEvents WHERE 1=1";
-$params = [];
-
-if ($filter_type) {
-    $sql .= " AND event_type = ?";
-    $params[] = $filter_type;
-}
-if ($filter_name) {
-    $sql .= " AND event_name = ?";
-    $params[] = $filter_name;
-}
-
-$stmt = $pdo->prepare($sql);
-$stmt->execute($params);
-$events = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// 從 CoupleClubs 抓取所有類別
-$allClubTypes = $pdo->query("SELECT DISTINCT category FROM CoupleClubs ORDER BY category")
-                    ->fetchAll(PDO::FETCH_COLUMN);
-
-// 如果有選社團類別，只抓該類別的社團名稱
-if ($filter_type) {
-    $nameStmt = $pdo->prepare("SELECT name FROM CoupleClubs WHERE category = ? ORDER BY name");
-    $nameStmt->execute([$filter_type]);
-    $allClubNames = $nameStmt->fetchAll(PDO::FETCH_COLUMN);
-} else {
-    $allClubNames = [];
-}
-?>
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -127,3 +80,4 @@ if ($filter_type) {
 <p class="center-text"><a href="index.php">回首頁</a></p>
 </body>
 </html>
+
