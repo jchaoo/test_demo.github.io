@@ -1,170 +1,149 @@
+
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>隨機範例網頁 — index.html</title>
+  <meta charset="UTF-8">
+  <title>活動報名系統</title>
   <style>
-    :root{
-      --bg:#f6fbf9;
-      --card:#ffffff;
-      --accent:#0b8f6a;
-      --text:#1f2933;
-      --muted:#6b7280;
+    body {
+      font-family: "微軟正黑體", sans-serif;
+      background-color: #d4ede7;
+      margin: 0;
+      padding: 20px;
     }
-    *{box-sizing:border-box}
-    body{font-family: "Noto Sans TC", "微軟正黑體", sans-serif; margin:0; background:var(--bg); color:var(--text);}
-    header{background:linear-gradient(90deg,var(--accent),#2db07a); color:white; padding:1.25rem 1rem}
-    .container{max-width:960px; margin:1.25rem auto; padding:0 1rem}
-    .brand{display:flex; gap:.75rem; align-items:center}
-    .brand h1{font-size:1.1rem; margin:0}
-    nav{margin-left:auto}
-    nav a{color:rgba(255,255,255,0.95); text-decoration:none; margin-left:1rem}
-
-    .hero{display:grid; grid-template-columns:1fr; gap:1rem; align-items:center; background:transparent; padding:2rem 0}
-    .card{background:var(--card); border-radius:12px; box-shadow:0 6px 18px rgba(7,15,20,0.06); padding:1rem}
-
-    .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1rem}
-    h2{margin-top:0}
-
-    footer{margin-top:2rem; text-align:center; color:var(--muted); padding:1rem 0}
-
-    /* small interactive bits */
-    .btn{display:inline-block; padding:.5rem .9rem; border-radius:8px; background:var(--accent); color:white; text-decoration:none}
-    form input, form textarea{width:100%; padding:.5rem; border:1px solid #e6eef0; border-radius:8px}
-    .meta{font-size:.9rem; color:var(--muted)}
-
-    /* dark mode */
-    .dark{--bg:#0f1720; --card:#0b1220; --accent:#10b981; --text:#e6eef3; --muted:#9aa6b2}
-    .toggle{cursor:pointer; border:1px solid rgba(255,255,255,0.12); background:transparent; padding:.4rem .6rem; border-radius:8px}
-
-    @media(min-width:720px){
-      .hero{grid-template-columns:1fr 380px}
+    h1 {
+      text-align: center;
+      color: #222;
+    }
+    .nav {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .nav a {
+      margin: 0 10px;
+      font-weight: bold;
+      color: #0056b3;
+      text-decoration: none;
+    }
+    .nav a:hover {
+      text-decoration: underline;
+    }
+    .container {
+      display: flex;
+      justify-content: space-around;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      max-width: 1000px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #999;
+      padding: 10px;
+      text-align: center;
+    }
+    .form-section input, .form-section select {
+      width: 90%;
+      padding: 6px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .form-section {
+      width: 40%;
+    }
+    .form-section label {
+      display: block;
+      margin-top: 8px;
+    }
+    .form-buttons {
+      margin-top: 10px;
+    }
+    .form-buttons button {
+      padding: 8px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      background-color: #006666;
+      color: white;
+      cursor: pointer;
+    }
+    .form-buttons button:hover {
+      background-color: #009999;
+    }
+    .club-list {
+      width: 50%;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="container" style="display:flex; align-items:center">
-      <div class="brand">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="6" fill="white" opacity="0.12"/></svg>
-        <h1>隨機範例網頁</h1>
+
+<h1>活動報名系統</h1>
+<div class="nav">
+  <a href="activity_list.php">活動列表</a>　
+  <a href="CheckRegistration.php">查詢報名狀態</a>　
+  <a href="AdminLogin.php">管理員入口</a>
+</div>
+
+<div class="container">
+  <!-- 社團總覽 -->
+  <div class="club-list">
+    <h2>社團總覽</h2>
+    <table>
+      <tr><th>類別</th><th>社團名稱</th><th>人數</th></tr>
+      <?php foreach ($clubs as $club): ?>
+        <tr>
+          <td><?= htmlspecialchars($club['category']) ?></td>
+          <td><?= htmlspecialchars($club['name']) ?></td>
+          <td><?= htmlspecialchars($club['capacity']) ?></td>
+        </tr>
+      <?php endforeach; ?>
+    </table>
+  </div>
+
+  <!-- 報名表單 -->
+  <div class="form-section" id="form">
+    <h2>報名表單</h2>
+    <form method="post" action="submit.php">
+      <label>姓名：</label>
+      <input type="text" name="name" required>
+
+      <label>學號：</label>
+      <input type="text" name="student_id" required>
+
+      <label>社團 1：</label>
+      <select name="club1" required>
+        <option value="">-- 請選擇 --</option>
+        <?php foreach ($clubs as $club): ?>
+          <option value="<?= htmlspecialchars($club['name']) ?>"><?= htmlspecialchars($club['name']) ?></option>
+        <?php endforeach; ?>
+      </select>
+
+      <label>社團 2：</label>
+      <select name="club2">
+        <option value="">-- 可選填 --</option>
+        <?php foreach ($clubs as $club): ?>
+          <option value="<?= htmlspecialchars($club['name']) ?>"><?= htmlspecialchars($club['name']) ?></option>
+        <?php endforeach; ?>
+      </select>
+
+      <label>Email：</label>
+      <input type="email" name="email" required>
+
+      <div class="form-buttons">
+        <button type="submit">確定</button>
+        <button type="reset">取消</button>
       </div>
-      <nav>
-        <a href="#about">關於</a>
-        <a href="#features">功能</a>
-        <a href="#contact">聯絡</a>
-        <button id="dmToggle" class="toggle">切換深色</button>
-      </nav>
-    </div>
-  </header>
+    </form>
+  </div>
+</div>
 
-  <main class="container">
-    <section class="hero">
-      <div>
-        <div class="card">
-          <h2>歡迎！</h2>
-          <p class="meta">這是一個由 ChatGPT 隨機產生的 index.html 範例，包含簡單的排版、互動與表單。</p>
-          <p>你可以直接把這個檔案放到本機或 GitHub Pages 上立刻預覽。內含：
-          <ul>
-            <li>響應式佈局</li>
-            <li>深色/淺色切換</li>
-            <li>簡單的聯絡表單（僅前端驗證）</li>
-          </ul>
-          </p>
-          <p><a class="btn" href="#contact">聯絡我們</a></p>
-        </div>
-
-        <div style="height:12px"></div>
-
-        <div class="grid">
-          <div class="card">
-            <h3 id="about">關於這個範例</h3>
-            <p class="meta">輕量、易讀、適合當成教學或專案起點。</p>
-          </div>
-          <div class="card">
-            <h3 id="features">功能一覽</h3>
-            <ul>
-              <li>響應式網格</li>
-              <li>簡單互動（JS）</li>
-              <li>表單驗證</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <aside>
-        <div class="card">
-          <h3>聯絡表單</h3>
-          <form id="contactForm">
-            <label>姓名 <input id="name" type="text" placeholder="你的名字"></label>
-            <div style="height:8px"></div>
-            <label>電子郵件 <input id="email" type="email" placeholder="you@example.com"></label>
-            <div style="height:8px"></div>
-            <label>訊息 <textarea id="message" rows="5" placeholder="想說的話..."></textarea></label>
-            <div style="height:8px"></div>
-            <button type="submit" class="btn">送出</button>
-            <p id="formFeedback" class="meta" style="margin-top:.5rem"></p>
-          </form>
-        </div>
-      </aside>
-    </section>
-
-    <section style="margin-top:1rem">
-      <div class="card">
-        <h2>範例清單</h2>
-        <p class="meta">此處示範一個簡單的互動清單。</p>
-        <ul id="todo">
-          <li>打開這個 index.html</li>
-          <li>試試深色模式切換</li>
-          <li>填寫表單（不會送到伺服器）</li>
-        </ul>
-      </div>
-    </section>
-
-    <footer>
-      <p>© 2025 隨機範例網頁 — 由 ChatGPT 產生</p>
-    </footer>
-  </main>
-
-  <script>
-    // 簡單互動：深色模式 & 表單驗證
-    const dmToggle = document.getElementById('dmToggle');
-    dmToggle.addEventListener('click', ()=>{
-      document.documentElement.classList.toggle('dark');
-      dmToggle.textContent = document.documentElement.classList.contains('dark') ? '切換淺色' : '切換深色';
-    });
-
-    // 表單（前端）驗證
-    const form = document.getElementById('contactForm');
-    const feedback = document.getElementById('formFeedback');
-    form.addEventListener('submit', (e)=>{
-      e.preventDefault();
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const msg = document.getElementById('message').value.trim();
-
-      if(!name || !email || !msg){
-        feedback.textContent = '請填寫所有欄位。';
-        return;
-      }
-      // 簡單 email 格式檢查
-      if(!/^\S+@\S+\.\S+$/.test(email)){
-        feedback.textContent = '請輸入正確的電子郵件格式。';
-        return;
-      }
-
-      feedback.textContent = '已在前端驗證通過（此範例不會送出伺服器）。';
-      form.reset();
-    });
-
-    // 其他小互動：點擊 todo 加刪除
-    document.getElementById('todo').addEventListener('click', (e)=>{
-      if(e.target.tagName === 'LI'){
-        e.target.classList.toggle('done');
-        e.target.style.textDecoration = e.target.classList.contains('done') ? 'line-through' : 'none';
-      }
-    });
-  </script>
 </body>
 </html>
