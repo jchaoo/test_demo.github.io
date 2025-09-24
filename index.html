@@ -85,31 +85,24 @@
 
 <h1>活動報名系統</h1>
 <div class="nav">
-  <a href="activity_list.html">活動列表</a>　
-  <a href="CheckRegistration.php">查詢報名狀態</a>　
-  <a href="AdminLogin.php">管理員入口</a>
+  <a href="#">活動列表</a>　
+  <a href="#">查詢報名狀態</a>　
+  <a href="#">管理員入口</a>
 </div>
 
 <div class="container">
   <!-- 社團總覽 -->
   <div class="club-list">
     <h2>社團總覽</h2>
-    <table>
+    <table id="clubTable">
       <tr><th>類別</th><th>社團名稱</th><th>人數</th></tr>
-      <?php foreach ($clubs as $club): ?>
-        <tr>
-          <td><?= htmlspecialchars($club['category']) ?></td>
-          <td><?= htmlspecialchars($club['name']) ?></td>
-          <td><?= htmlspecialchars($club['capacity']) ?></td>
-        </tr>
-      <?php endforeach; ?>
     </table>
   </div>
 
   <!-- 報名表單 -->
   <div class="form-section" id="form">
     <h2>報名表單</h2>
-    <form method="post" action="submit.php">
+    <form id="signupForm">
       <label>姓名：</label>
       <input type="text" name="name" required>
 
@@ -117,19 +110,13 @@
       <input type="text" name="student_id" required>
 
       <label>社團 1：</label>
-      <select name="club1" required>
+      <select name="club1" id="club1" required>
         <option value="">-- 請選擇 --</option>
-        <?php foreach ($clubs as $club): ?>
-          <option value="<?= htmlspecialchars($club['name']) ?>"><?= htmlspecialchars($club['name']) ?></option>
-        <?php endforeach; ?>
       </select>
 
       <label>社團 2：</label>
-      <select name="club2">
+      <select name="club2" id="club2">
         <option value="">-- 可選填 --</option>
-        <?php foreach ($clubs as $club): ?>
-          <option value="<?= htmlspecialchars($club['name']) ?>"><?= htmlspecialchars($club['name']) ?></option>
-        <?php endforeach; ?>
       </select>
 
       <label>Email：</label>
@@ -143,8 +130,43 @@
   </div>
 </div>
 
+<script>
+  // 假資料（原本的 PHP $clubs）
+  const clubs = [
+    { category: "體育", name: "籃球社", capacity: 30 },
+    { category: "藝文", name: "吉他社", capacity: 25 },
+    { category: "服務", name: "志工社", capacity: 20 },
+    { category: "學術", name: "資訊社", capacity: 40 }
+  ];
+
+  // 填入社團總覽表格
+  const clubTable = document.getElementById("clubTable");
+  clubs.forEach(club => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${club.category}</td>
+      <td>${club.name}</td>
+      <td>${club.capacity}</td>
+    `;
+    clubTable.appendChild(row);
+  });
+
+  // 填入表單下拉選單
+  const club1Select = document.getElementById("club1");
+  const club2Select = document.getElementById("club2");
+  clubs.forEach(club => {
+    const option1 = new Option(club.name, club.name);
+    const option2 = new Option(club.name, club.name);
+    club1Select.add(option1);
+    club2Select.add(option2);
+  });
+
+  // 表單送出事件（示範用，先不連後端）
+  document.getElementById("signupForm").addEventListener("submit", e => {
+    e.preventDefault();
+    alert("表單送出成功！（目前僅示範，未連接後端）");
+  });
+</script>
+
 </body>
 </html>
-
-
-
