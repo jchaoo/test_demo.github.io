@@ -1,25 +1,3 @@
-<?php
-// 顯示錯誤訊息
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
-// 資料庫連線設定
-try {
-    $pdo = new PDO("mysql:host=192.168.100.20;dbname=I4010_9956;charset=utf8", 'ui4b45', 'Esas0914');
-} catch (PDOException $e) {
-    die("連線失敗：" . $e->getMessage());
-}
-
-// 查詢 CoupleClubs 資料表
-$sql = "SELECT * FROM CoupleClubs ORDER BY category, name";
-try {
-    $stmt = $pdo->query($sql);
-    $clubs = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
-} catch (Exception $e) {
-    die("查詢錯誤：" . $e->getMessage());
-}
-?>
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -167,4 +145,5 @@ try {
 
 </body>
 </html>
+
 
