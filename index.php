@@ -1,0 +1,169 @@
+<?php
+// 顯示錯誤訊息
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// 資料庫連線設定
+try {
+    $pdo = new PDO("mysql:host=192.168.100.20;dbname=I4010_9956;charset=utf8", 'ui4b45', 'Esas0914');
+} catch (PDOException $e) {
+    die("連線失敗：" . $e->getMessage());
+}
+
+// 查詢 CoupleClubs 資料表
+$sql = "SELECT * FROM CoupleClubs ORDER BY category, name";
+try {
+    $stmt = $pdo->query($sql);
+    $clubs = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+} catch (Exception $e) {
+    die("查詢錯誤：" . $e->getMessage());
+}
+?>
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>活動報名系統</title>
+  <style>
+    body {
+      font-family: "微軟正黑體", sans-serif;
+      background-color: #d4ede7;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #222;
+    }
+    .nav {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .nav a {
+      margin: 0 10px;
+      font-weight: bold;
+      color: #0056b3;
+      text-decoration: none;
+    }
+    .nav a:hover {
+      text-decoration: underline;
+    }
+    .container {
+      display: flex;
+      justify-content: space-around;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      max-width: 1000px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #999;
+      padding: 10px;
+      text-align: center;
+    }
+    .form-section input, .form-section select {
+      width: 90%;
+      padding: 6px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .form-section {
+      width: 40%;
+    }
+    .form-section label {
+      display: block;
+      margin-top: 8px;
+    }
+    .form-buttons {
+      margin-top: 10px;
+    }
+    .form-buttons button {
+      padding: 8px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      background-color: #006666;
+      color: white;
+      cursor: pointer;
+    }
+    .form-buttons button:hover {
+      background-color: #009999;
+    }
+    .club-list {
+      width: 50%;
+    }
+  </style>
+</head>
+<body>
+
+<h1>活動報名系統</h1>
+<div class="nav">
+  <a href="activity_list.php">活動列表</a>　
+  <a href="CheckRegistration.php">查詢報名狀態</a>　
+  <a href="AdminLogin.php">管理員入口</a>
+</div>
+
+<div class="container">
+  <!-- 社團總覽 -->
+  <div class="club-list">
+    <h2>社團總覽</h2>
+    <table>
+      <tr><th>類別</th><th>社團名稱</th><th>人數</th></tr>
+      <?php foreach ($clubs as $club): ?>
+        <tr>
+          <td><?= htmlspecialchars($club['category']) ?></td>
+          <td><?= htmlspecialchars($club['name']) ?></td>
+          <td><?= htmlspecialchars($club['capacity']) ?></td>
+        </tr>
+      <?php endforeach; ?>
+    </table>
+  </div>
+
+  <!-- 報名表單 -->
+  <div class="form-section" id="form">
+    <h2>報名表單</h2>
+    <form method="post" action="submit.php">
+      <label>姓名：</label>
+      <input type="text" name="name" required>
+
+      <label>學號：</label>
+      <input type="text" name="student_id" required>
+
+      <label>社團 1：</label>
+      <select name="club1" required>
+        <option value="">-- 請選擇 --</option>
+        <?php foreach ($clubs as $club): ?>
+          <option value="<?= htmlspecialchars($club['name']) ?>"><?= htmlspecialchars($club['name']) ?></option>
+        <?php endforeach; ?>
+      </select>
+
+      <label>社團 2：</label>
+      <select name="club2">
+        <option value="">-- 可選填 --</option>
+        <?php foreach ($clubs as $club): ?>
+          <option value="<?= htmlspecialchars($club['name']) ?>"><?= htmlspecialchars($club['name']) ?></option>
+        <?php endforeach; ?>
+      </select>
+
+      <label>Email：</label>
+      <input type="email" name="email" required>
+
+      <div class="form-buttons">
+        <button type="submit">確定</button>
+        <button type="reset">取消</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>
